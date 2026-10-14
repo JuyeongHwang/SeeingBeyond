@@ -4,196 +4,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="color-scheme" content="light">
-    <title>Seeing Beyond the Next Step | NeurIPS 2026</title>
+    <title>Seeing Beyond the Next Step: World-Model-Guided Human-Like Navigation in Multi-Agent Scenes</title>
     <meta name="description"
-        content="World-model-guided human-like navigation in multi-agent scenes. Two task-aligned world models act as a training-time preference oracle; the deployed policy acts in a single forward pass. NeurIPS 2026.">
+        content="Seeing Beyond the Next Step: World-Model-Guided Human-Like Navigation in Multi-Agent Scenes. NeurIPS 2026.">
     <meta name="author" content="Seong-Eun Hong, JuYeong Hwang, Jinhyun Kim, Hanyoung Jang, HyeongYeop Kang">
 
     <meta property="og:type" content="website">
     <meta property="og:title" content="Seeing Beyond the Next Step: World-Model-Guided Human-Like Navigation in Multi-Agent Scenes">
-    <meta property="og:description"
-        content="Look ahead during training, act instantly at deployment. NeurIPS 2026.">
+    <meta property="og:description" content="NeurIPS 2026">
     <meta property="og:url" content="https://juyeonghwang.github.io/SeeingBeyond/">
     <meta property="og:image" content="https://juyeonghwang.github.io/SeeingBeyond/static/images/og.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta name="twitter:card" content="summary_large_image">
 
-    <link rel="icon"
-        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='12' fill='%23eb6834'/%3E%3C/svg%3E">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
     <link rel="stylesheet" href="static/css/style.css">
 </head>
 
 <body>
 
-    <!-- ===== Top bar ===== -->
-    <header class="topbar" id="topbar">
-        <div class="wrap topbar-inner">
-            <a href="#top" class="topbar-brand" aria-label="Seeing Beyond the Next Step, back to top">
-                <span class="topbar-dot" aria-hidden="true"></span>
-                <span class="topbar-brand-text" aria-hidden="true">Seeing Beyond the Next Step</span>
-            </a>
-            <nav class="topbar-nav" aria-label="Sections">
-                <a href="#video">Video</a>
-                <a href="#method">Method</a>
-                <a href="#results">Results</a>
-                <a href="#bibtex">BibTeX</a>
-            </nav>
+    <!-- ===== Contents ===== -->
+    <nav class="toc" id="toc" aria-label="Contents">
+        <p class="toc-title">Contents</p>
+        <ul>
+            <li><a href="#abstract">Abstract</a></li>
+            <li><a href="#video">Video</a></li>
+            <li><a href="#method">Method</a></li>
+            <li><a href="#results">Results</a>
+                <ul>
+                    <li><a href="#closed-loop">1. Closed-Loop Navigation</a></li>
+                    <li><a href="#qualitative">2. Qualitative Comparison</a></li>
+                    <li><a href="#ablation">3. Ablation Study</a></li>
+                    <li><a href="#world-models">4. World Model Predictions</a></li>
+                    <li><a href="#human-likeness">5. Human-Likeness</a></li>
+                </ul>
+            </li>
+            <li><a href="#limitations">Limitations</a></li>
+            <li><a href="#bibtex">BibTeX</a></li>
+        </ul>
+    </nav>
+
+    <div class="page">
+
+    <!-- ===== Header ===== -->
+    <header class="hero">
+        <div class="container">
+            <div class="logos">
+                <img src="static/images/logo-lab.png" alt="IIIXR Lab" width="90" height="104">
+                <img src="static/images/logo-ku.png" alt="Korea University" width="80" height="100">
+                <img src="static/images/logo-ncai.png" alt="NC AI" class="logo-ncai" width="136" height="52">
+            </div>
+
+            <h1 class="publication-title"><span class="name"><span class="name-a">Seeing Beyond</span> <span
+                        class="name-b">the Next Step</span></span>: <span class="nowrap">World-Model-Guided</span>
+                <span class="nowrap">Human-Like</span> Navigation in <span class="nowrap">Multi-Agent</span> Scenes</h1>
+            <p class="publication-venue">NeurIPS 2026</p>
+
+            <p class="publication-authors">
+                <span class="author"><a href="https://seoneun.github.io/" target="_blank" rel="noopener">Seong-Eun
+                        Hong</a><sup>1*</sup></span>
+                <span class="author"><a href="https://juyeonghwang.github.io/" target="_blank"
+                        rel="noopener">JuYeong Hwang</a><sup>1*</sup></span>
+                <span class="author">Jinhyun Kim<sup>1</sup></span>
+                <span class="author">Hanyoung Jang<sup>2</sup></span>
+                <span class="author">HyeongYeop Kang<sup>1&dagger;</sup></span>
+            </p>
+            <p class="publication-affils">
+                <span><sup>1</sup>Korea University</span>
+                <span><sup>2</sup>NC AI</span>
+            </p>
+            <p class="publication-notes"><sup>*</sup>Equal contribution &nbsp;&nbsp; <sup>&dagger;</sup>Corresponding
+                author</p>
+
+            <div class="publication-links">
+                <a class="link-button" href="https://openreview.net/forum?id=pxblmE8t2f" target="_blank"
+                    rel="noopener"><i class="fas fa-file-pdf" aria-hidden="true"></i><span>Paper</span></a>
+                <a class="link-button" href="#video"><i class="fas fa-film" aria-hidden="true"></i><span>Video</span></a>
+                <a class="link-button" href="#bibtex"><i class="fas fa-quote-right"
+                        aria-hidden="true"></i><span>BibTeX</span></a>
+            </div>
         </div>
     </header>
 
     <main>
 
-        <!-- ===== Hero ===== -->
-        <section class="hero" id="top">
-            <div class="wrap">
-                <span class="venue">NeurIPS 2026</span>
-                <h1 class="title">Seeing Beyond the Next Step</h1>
-                <p class="subtitle">World-Model-Guided Human-Like Navigation in Multi-Agent Scenes</p>
-
-                <ul class="authors">
-                    <li><a href="https://seoneun.github.io/" target="_blank" rel="noopener">Seong-Eun Hong</a><sup>1*</sup></li>
-                    <li><a href="https://juyeonghwang.github.io/" target="_blank" rel="noopener">JuYeong Hwang</a><sup>1*</sup></li>
-                    <li>Jinhyun Kim<sup>1</sup></li>
-                    <li>Hanyoung Jang<sup>2</sup></li>
-                    <li>HyeongYeop Kang<sup>1&dagger;</sup></li>
-                </ul>
-                <ul class="affils">
-                    <li><sup>1</sup>Korea University</li>
-                    <li><sup>2</sup>NC AI</li>
-                </ul>
-                <p class="notes"><span><sup>*</sup>Equal contribution</span><span><sup>&dagger;</sup>Corresponding
-                        author</span></p>
-
-                <div class="logos">
-                    <img src="static/images/logo-lab.png" alt="IIIXR Lab" width="90" height="104">
-                    <img src="static/images/logo-ku.png" alt="Korea University" width="80" height="100">
-                    <img src="static/images/logo-ncai.png" alt="NC AI" class="logo-ncai" width="136" height="52">
-                </div>
-
-                <div class="links">
-                    <a class="btn" href="https://openreview.net/forum?id=pxblmE8t2f" target="_blank" rel="noopener">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" />
-                            <path d="M14 3v5h5M9 13h6M9 17h6" />
-                        </svg>
-                        Paper
-                    </a>
-                    <a class="btn btn-ghost" href="#video">
-                        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                            <path d="M8 5.14v13.72a1 1 0 0 0 1.52.85l11-6.86a1 1 0 0 0 0-1.7l-11-6.86A1 1 0 0 0 8 5.14z" />
-                        </svg>
-                        Video
-                    </a>
-                    <a class="btn btn-ghost" href="#bibtex">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <path d="M7 8h10M7 12h10M7 16h6" />
-                            <rect x="3" y="3" width="18" height="18" rx="3" />
-                        </svg>
-                        BibTeX
-                    </a>
-                </div>
-            </div>
-        </section>
-
         <!-- ===== Teaser ===== -->
-        <section class="teaser" aria-label="Teaser">
-            <div class="wrap">
-                <div class="media-frame">
-                    <video id="teaser-video" src="static/videos/teaser.mp4" poster="static/images/teaser-poster.jpg"
-                        autoplay muted loop playsinline preload="auto" width="1280" height="600"
-                        aria-label="An agent at an intersection reasons about where a car will be before choosing its path"></video>
-                </div>
-                <p class="teaser-caption">
-                    The shortest route to the goal cuts diagonally across the intersection. The road is empty now,
-                    but in a few seconds a car will be right there. <strong>A person would see this coming and take
-                        the crosswalks</strong> &mdash; we teach a navigation policy that same judgment.
-                </p>
-            </div>
-        </section>
-
-        <!-- ===== Key idea ===== -->
-        <section class="section-band" aria-labelledby="idea-title">
-            <div class="wrap">
-                <div class="idea">
-                    <div>
-                        <span class="kicker">Key idea</span>
-                        <p class="idea-quote" id="idea-title">Look ahead during training, <em>act instantly at
-                                deployment.</em></p>
-                        <p class="idea-text">World models are used only as a training-time preference oracle. Their
-                            foresight is distilled into the policy, so at deployment the agent picks its next motion in a
-                            single forward pass &mdash; no rollouts, no scoring.</p>
-                    </div>
-                    <div class="stats">
-                        <div class="stat">
-                            <span class="stat-value">5 / 5</span>
-                            <span class="stat-label">held-out scenes with the best goal success and the lowest
-                                region-violation rate</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-value">17.4<span class="arrow">&rarr;</span><span
-                                    class="hl">1.2</span></span>
-                            <span class="stat-label">region-violation rate (%) on Zara01_Group vs. the next-best
-                                method</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-value">65 ms</span>
-                            <span class="stat-label">per decision at deployment, with both world models
-                                removed</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-value"><span class="hl">4.94</span><span
-                                    class="arrow">vs</span>3.54</span>
-                            <span class="stat-label">perceived motion quality (7-point scale) vs. the best baseline,
-                                from 20 naive observers</span>
-                        </div>
-                    </div>
-                </div>
+        <section class="section teaser">
+            <div class="container">
+                <video id="teaser" src="static/videos/teaser.mp4" poster="static/images/teaser-poster.jpg" autoplay
+                    muted loop playsinline preload="auto" width="1280" height="600"
+                    aria-label="An agent at an intersection considers a diagonal path that a car is about to cross, then takes the crosswalks"></video>
+                <p class="teaser-caption">The shortest path to the goal crosses the intersection diagonally, through
+                    the spot a car will reach a few seconds later. Our agent anticipates this and takes the
+                    crosswalks, as a pedestrian would.</p>
             </div>
         </section>
 
         <!-- ===== Abstract ===== -->
-        <section class="section" aria-labelledby="abstract-title">
-            <div class="wrap wrap-text prose">
-                <h2 id="abstract-title">Abstract</h2>
-                <p>Selecting a next motion in a populated scene is not just a matter of avoiding what is currently in
-                    the way: an action can be locally feasible yet drift onto the road instead of the crosswalk, cut
-                    into a stream of crossing pedestrians, or bottleneck a narrow passage. These failure modes are
-                    invisible from the current state alone, and acting on them requires reasoning about what each
-                    candidate action will cause. World models offer exactly this, namely action-conditioned predictions
-                    of the future, but rolling them out at every decision step is a cost deployable navigation systems
-                    cannot pay, and the field has largely traded foresight for speed.</p>
-                <p>We argue this is a false dichotomy. The natural place for a world model in human-aware navigation is
-                    <strong>at training time, as a preference oracle</strong> that distills foresight into a fast
-                    policy, rather than at inference time, as an online planner. We pair a discrete visual action prior
-                    with two task-aligned world models, one for nearby social dynamics and one for future scene
-                    semantics, that score candidate actions by their predicted consequences and refine the policy
-                    through group-relative preference distillation. At deployment, both world models are removed and
-                    the policy acts in a single forward pass.</p>
-                <p>Across five held-out scenes, this yields navigation that is simultaneously safer, more socially and
-                    group-coherent, and more goal-directed than strong reactive and learned baselines, with naive
-                    observers rating the resulting motion as more human-like. Taken together, our findings point to a
-                    different approach for bringing world-model foresight into deployable agents: not accelerating
-                    rollouts, but amortizing them into the policy so that the cost of looking ahead is confined to
-                    training.</p>
+        <section class="section" id="abstract">
+            <div class="container text-column">
+                <h2 class="section-title">Abstract</h2>
+                <div class="content justified">
+                    <p>Selecting a next motion in a populated scene is not just a matter of avoiding what is currently
+                        in the way: an action can be locally feasible yet drift onto the road instead of the crosswalk,
+                        cut into a stream of crossing pedestrians, or bottleneck a narrow passage. These failure modes
+                        are invisible from the current state alone, and acting on them requires reasoning about what
+                        each candidate action will cause. World models offer exactly this, namely action-conditioned
+                        predictions of the future, but rolling them out at every decision step is a cost deployable
+                        navigation systems cannot pay, and the field has largely traded foresight for speed. We argue
+                        this is a false dichotomy. The natural place for a world model in human-aware navigation is at
+                        <span class="hl">training time, as a preference oracle</span> that distills foresight into a fast policy, rather than
+                        at inference time, as an online planner. We pair a discrete visual action prior with <span class="hl">two
+                        task-aligned world models</span>, one for nearby social dynamics and one for future scene semantics,
+                        that score candidate actions by their predicted consequences and refine the policy through
+                        <span class="hl">group-relative preference distillation</span>. At deployment, both world models are removed and the
+                        policy acts in a <span class="hl">single forward pass</span>. Across five held-out scenes, this yields navigation that
+                        is simultaneously safer, more socially and group-coherent, and more goal-directed than strong
+                        reactive and learned baselines, with naive observers rating the resulting motion as more
+                        human-like. Taken together, our findings point to a different approach for bringing
+                        world-model foresight into deployable agents: not accelerating rollouts, but amortizing them
+                        into the policy so that the cost of looking ahead is confined to training.</p>
+                </div>
             </div>
         </section>
 
         <!-- ===== Video ===== -->
-        <section class="section" id="video" aria-labelledby="video-title">
-            <div class="wrap">
-                <div class="wrap-text" style="padding:0;margin:0 auto;">
-                    <h2 id="video-title">Video</h2>
-                </div>
-                <div class="media-frame video-frame">
+        <section class="section" id="video">
+            <div class="container">
+                <h2 class="section-title">Video</h2>
+                <div class="video-wrap">
                     <video src="static/videos/overview.mp4" poster="static/images/overview-poster.jpg" controls
                         preload="metadata" playsinline width="1280" height="720"></video>
                 </div>
@@ -201,400 +142,251 @@
         </section>
 
         <!-- ===== Method ===== -->
-        <section class="section" id="method" aria-labelledby="method-title">
-            <div class="wrap">
-                <div class="wrap-text prose" style="padding:0;margin:0 auto;">
-                    <span class="kicker">Method</span>
-                    <h2 id="method-title">A world model that teaches, then steps aside</h2>
-                    <p class="lead">Training runs in two stages. Stage&nbsp;1 adapts a pretrained VLM into a policy that
-                        imitates human motion over a discrete vocabulary of motion anchors. Stage&nbsp;2 refines it with
-                        two navigation-aligned world models that score each candidate anchor by its predicted social and
-                        semantic consequences. Only the refined policy is deployed.</p>
+        <section class="section" id="method">
+            <div class="container">
+                <div class="text-column">
+                    <h2 class="section-title">Method</h2>
+                    <div class="content justified">
+                        <p>We train the policy in two stages. In Stage&nbsp;1, a pretrained vision-language model
+                            (Qwen3-VL-2B with LoRA) is fine-tuned into a VLA policy that classifies the next motion over
+                            a fixed vocabulary of motion anchors, imitating human demonstrations. In Stage&nbsp;2, two
+                            navigation-aligned world models predict what each candidate anchor would lead to, and the
+                            resulting preferences are distilled into the policy with Group Relative Policy Optimization
+                            (GRPO). The world models are used only during training.</p>
+                    </div>
                 </div>
 
                 <figure class="figure">
-                    <a class="figure-img" href="static/images/pipeline.png" target="_blank" rel="noopener">
-                        <img src="static/images/pipeline.png" width="2020" height="715" loading="lazy"
-                            alt="Training pipeline. Stage 1: a VLM with LoRA maps RGB observation, ego-relative goal, velocities, and nearby pedestrians and dynamic objects to a motion anchor. Stage 2: a candidate group of anchors is scored by a dual navigation-aligned world model (state transition and semantic transition), and the predicted outcomes drive preference-guided GRPO with goal progress, smoothness, current and future risk, and semantic validity terms.">
-                    </a>
-                    <figcaption><b>Overview.</b> Stage&nbsp;1 grounds agent-centric visual observations and navigation
-                        context to executable motion anchors through supervised learning. Stage&nbsp;2 compares plausible
-                        candidate anchors by their predicted outcomes from the dual world model and distills the
-                        preference back into the policy with GRPO.</figcaption>
+                    <img src="static/images/pipeline.png" width="2020" height="715" loading="lazy"
+                        alt="Training pipeline. Stage 1: a VLM with LoRA maps the RGB observation, ego-relative goal, velocities, and nearby pedestrians and dynamic objects to a motion anchor. Stage 2: a candidate group of anchors is scored by the State Transition and Semantic Transition World Models, and the predicted outcomes drive preference-guided GRPO.">
+                    <figcaption><strong>Overview.</strong> Stage&nbsp;1 grounds agent-centric observations and
+                        navigation context to executable motion anchors through supervised learning. Stage&nbsp;2
+                        compares plausible candidates by their predicted social, semantic and goal-directed
+                        consequences and refines the policy with GRPO.</figcaption>
                 </figure>
 
-                <ol class="steps">
-                    <li class="step">
-                        <div class="step-media">
-                            <div class="media-frame">
-                                <video data-autoplay src="static/videos/anchors.mp4"
-                                    poster="static/images/anchors-poster.jpg" muted loop playsinline preload="none"
-                                    width="1280" height="600"
-                                    aria-label="The controlled agent with a fan of 100 motion anchors around it, picking one at each step"></video>
-                            </div>
-                        </div>
-                        <div class="step-body">
-                            <span class="step-num">01 &middot; ACTION PRIOR</span>
-                            <h3>Motion anchors from real walking</h3>
-                            <p>Demonstrations are cut into 0.8&nbsp;s clips and clustered into a vocabulary of
-                                <strong>K&nbsp;=&nbsp;100 motion anchors</strong>. Choosing an action becomes
-                                classification over behaviorally plausible motions: at each step the policy picks an
-                                anchor, executes it, and picks again.</p>
-                            <ul class="chips">
-                                <li>Qwen3-VL-2B + LoRA</li>
-                                <li>Anchor classification</li>
-                            </ul>
-                        </div>
-                    </li>
+                <div class="clip-grid">
+                    <div class="clip clip-stage">
+                        <video data-autoplay src="static/videos/anchors.mp4" poster="static/images/anchors-poster.jpg"
+                            muted loop playsinline preload="none" width="1280" height="600"
+                            aria-label="The controlled agent with its fan of motion anchors"></video>
+                        <h3>Motion anchors</h3>
+                        <p>Demonstrations recorded at 25&nbsp;FPS are cut into 20-frame (0.8&nbsp;s) clips and
+                            clustered into K&nbsp;=&nbsp;100 anchors. At each step the policy selects one anchor,
+                            executes it, and selects again.</p>
+                    </div>
+                    <div class="clip clip-wm">
+                        <video data-autoplay src="static/videos/state-wm.mp4"
+                            poster="static/images/state-wm-poster.jpg" muted loop playsinline preload="none"
+                            width="1280" height="600"
+                            aria-label="Predicted next positions of nearby agents"></video>
+                        <h3>State Transition World Model</h3>
+                        <p>Predicts the next relative position and velocity of every nearby pedestrian and vehicle
+                            under a candidate anchor. A direction term in the loss captures who is heading toward
+                            whom.</p>
+                    </div>
+                    <div class="clip clip-wm">
+                        <video data-autoplay src="static/videos/semantic-wm.mp4"
+                            poster="static/images/semantic-wm-poster.jpg" muted loop playsinline preload="none"
+                            width="1280" height="600"
+                            aria-label="An ego-view frame next to its semantic target with pedestrians removed"></video>
+                        <h3>Semantic Transition World Model</h3>
+                        <p>An EDM-style denoiser that predicts the future segmentation of sidewalk, crosswalk, road,
+                            vehicle, building and obstacle. Pedestrians are ignored in the target, so this branch learns
+                            the layout and leaves agent motion to the state branch.</p>
+                    </div>
+                    <div class="clip clip-grpo">
+                        <video data-autoplay src="static/videos/grpo.mp4" poster="static/images/grpo-poster.jpg" muted
+                            loop playsinline preload="none" width="1280" height="600"
+                            aria-label="Ten candidate anchors around the agent with their predicted-outcome scores"></video>
+                        <h3>Preference-guided GRPO</h3>
+                        <p>Each group holds ten candidates: the policy&rsquo;s top five anchors and five sampled
+                            uniformly from the rest. GRPO moves the policy toward candidates that score above the
+                            group mean.</p>
+                    </div>
+                </div>
 
-                    <li class="step">
-                        <div class="step-media">
-                            <div class="media-frame">
-                                <video data-autoplay src="static/videos/state-wm.mp4"
-                                    poster="static/images/state-wm-poster.jpg" muted loop playsinline preload="none"
-                                    width="1280" height="600"
-                                    aria-label="Predicted next positions of nearby agents, highlighting who is heading toward the ego agent"></video>
-                            </div>
-                        </div>
-                        <div class="step-body">
-                            <span class="step-num">02 &middot; SOCIAL FORESIGHT</span>
-                            <h3>State Transition World Model</h3>
-                            <p>Given a candidate anchor, predicts where nearby people and vehicles move next &mdash;
-                                their relative position and velocity. An explicit direction term captures <strong>who
-                                    is heading toward whom</strong>, which is what makes it useful for ranking
-                                interaction risk.</p>
-                            <ul class="chips">
-                                <li>0.18&nbsp;m position ADE</li>
-                                <li>20.8&deg; heading error</li>
-                            </ul>
-                        </div>
-                    </li>
-
-                    <li class="step">
-                        <div class="step-media">
-                            <div class="media-frame">
-                                <video data-autoplay src="static/videos/semantic-wm.mp4"
-                                    poster="static/images/semantic-wm-poster.jpg" muted loop playsinline preload="none"
-                                    width="1280" height="600"
-                                    aria-label="An ego-view RGB frame next to its semantic target with pedestrians removed"></video>
-                            </div>
-                        </div>
-                        <div class="step-body">
-                            <span class="step-num">03 &middot; LAYOUT FORESIGHT</span>
-                            <h3>Semantic Transition World Model</h3>
-                            <p>Predicts a future <strong>semantic map</strong> &mdash; sidewalk, crosswalk, road,
-                                vehicle, building, obstacle &mdash; rather than photorealistic frames. Pedestrians are
-                                removed from the target, so it learns the layout alone while the state model owns who
-                                moves where.</p>
-                            <ul class="chips">
-                                <li>EDM-style denoiser</li>
-                                <li>87.0% mIoU</li>
-                            </ul>
-                        </div>
-                    </li>
-
-                    <li class="step">
-                        <div class="step-media">
-                            <div class="media-frame">
-                                <video data-autoplay src="static/videos/grpo.mp4" poster="static/images/grpo-poster.jpg"
-                                    muted loop playsinline preload="none" width="1280" height="600"
-                                    aria-label="Ten candidate anchors around the agent, each with a predicted-outcome score bar"></video>
-                            </div>
-                        </div>
-                        <div class="step-body">
-                            <span class="step-num">04 &middot; PREFERENCE DISTILLATION</span>
-                            <h3>Preference-guided GRPO</h3>
-                            <p>For each observation, 10 candidates (the policy&rsquo;s top&nbsp;5 plus 5 random) are
-                                scored by their predicted outcome. GRPO shifts the policy toward candidates above the
-                                group mean.</p>
-                            <div class="equation">
-                                <span class="equation-main" aria-label="r equals G minus C minus P current minus P future plus M"><i>r</i> = <i>G</i> &minus; <i>C</i> &minus; <i>P</i><sub>cur</sub> &minus; <i>P</i><sub>fut</sub> + <i>M</i></span>
-                                <dl>
-                                    <dt>G</dt>
-                                    <dd>goal progress</dd>
-                                    <dt>C</dt>
-                                    <dd>smoothness cost</dd>
-                                    <dt>P<sub>cur</sub></dt>
-                                    <dd>immediate interaction risk</dd>
-                                    <dt>P<sub>fut</sub></dt>
-                                    <dd>future risk, from the state model</dd>
-                                    <dt>M</dt>
-                                    <dd>semantic validity, from the semantic model</dd>
-                                </dl>
-                            </div>
-                        </div>
-                    </li>
-
-                    <li class="step">
-                        <div class="step-media">
-                            <div class="media-frame">
-                                <video data-autoplay src="static/videos/deploy.mp4"
-                                    poster="static/images/deploy-poster.jpg" muted loop playsinline preload="none"
-                                    width="1280" height="600"
-                                    aria-label="The deployed agent crossing at the crosswalk as a car passes"></video>
-                            </div>
-                        </div>
-                        <div class="step-body">
-                            <span class="step-num">05 &middot; DEPLOYMENT</span>
-                            <h3>One forward pass</h3>
-                            <p>At deployment there are no world models, no candidate groups and no scoring. The
-                                look-ahead is amortized into the policy&rsquo;s weights, so inference cost is independent
-                                of the world models&rsquo; size, denoising depth or rollout horizon.</p>
-                            <ul class="chips">
-                                <li>65&nbsp;ms per decision</li>
-                                <li>Single RTX 6000 Ada</li>
-                            </ul>
-                        </div>
-                    </li>
-                </ol>
+                <div class="text-column">
+                    <div class="content justified">
+                        <p>Each candidate \(a_t^{(i)}\) is scored by its predicted consequences,</p>
+                        <p class="math-display">$$r_t^{(i)} = G_t^{(i)} - C_t^{(i)} - P_{\mathrm{cur},t}^{(i)} -
+                            P_{\mathrm{fut},t}^{(i)} + M_t^{(i)},$$</p>
+                        <p>where \(G\) is goal progress, \(C\) is action smoothness, \(P_{\mathrm{cur}}\) is immediate
+                            interaction risk, \(P_{\mathrm{fut}}\) is future interaction risk from the State Transition
+                            World Model, and \(M\) is semantic validity from the Semantic Transition World Model. All
+                            terms are scale-normalized and summed with unit weights.</p>
+                        <p>At deployment, the world models, candidate groups and scoring are discarded. The policy
+                            returns a distribution over anchors in a single forward pass, <span class="hl">65&nbsp;ms</span> per decision on one
+                            RTX&nbsp;6000&nbsp;Ada, so its cost does not depend on the size, denoising depth or rollout
+                            horizon of the world models.</p>
+                    </div>
+                </div>
             </div>
         </section>
 
         <!-- ===== Results ===== -->
-        <section class="section" id="results" aria-labelledby="results-title">
-            <div class="wrap">
-                <div class="wrap-text prose" style="padding:0;margin:0 auto;">
-                    <span class="kicker">Results</span>
-                    <h2 id="results-title">Safer, more compliant and more goal-directed &mdash; at once</h2>
-                    <p class="lead">We reconstruct the ETH/UCY pedestrian datasets as Unity scenes and compare against
-                        three navigation baselines spanning the major paradigms: <strong>GBM</strong> (vision-based
-                        gradient steering), <strong>CCP</strong> (configurable RL crowd profiles) and
-                        <strong>CEDRL</strong> (example-driven deep RL). Every result is averaged over three runs.</p>
+        <section class="section" id="results">
+            <div class="container">
+                <div class="text-column">
+                    <h2 class="section-title">Results</h2>
+                    <div class="content justified">
+                        <p>We reconstruct the ETH/UCY pedestrian datasets as Unity scenes. The policy and both world
+                            models are trained on Hotel, Zara01, ETH and Students003. We evaluate on five scenarios:
+                            held-out trajectories in Zara01 and Students003; ETH_Hallway and ETH_Intersection, two
+                            layouts built from the ETH asset that are never seen in training; and Zara01_Group, which
+                            adds larger groups. We compare against GBM (Dutra et al., 2017), CCP (Panayiotou et al.,
+                            2022) and CEDRL (Panayiotou et al., 2025). All results are averaged over three runs.</p>
+                    </div>
                 </div>
 
                 <figure class="figure">
-                    <a class="figure-img" href="static/images/scenes.jpg" target="_blank" rel="noopener">
-                        <img src="static/images/scenes.jpg" width="1616" height="272" loading="lazy"
-                            alt="The six Unity scenes: Students003, Hotel, Zara01, ETH, ETH_Hallway and ETH_Intersection.">
-                    </a>
-                    <figcaption><b>Scenes.</b> Policies and world models train on Hotel, Zara01, ETH and Students003.
-                        Evaluation uses held-out trajectories in Zara01 and Students003, two layouts never seen in
-                        training (<b>ETH_Hallway</b>: constrained passages; <b>ETH_Intersection</b>: crossing flows),
-                        and <b>Zara01_Group</b> with larger groups.</figcaption>
+                    <img src="static/images/scenes.jpg" width="1616" height="272" loading="lazy"
+                        alt="The six Unity scenes: Students003, Hotel, Zara01, ETH, ETH_Hallway and ETH_Intersection.">
+                    <figcaption>Training and evaluation scenes.</figcaption>
                 </figure>
 
-                <!-- Closed-loop chart -->
-                <h3 class="sub-head">Closed-loop navigation on five held-out scenarios</h3>
-                <p class="sub-lead">Lower violations do not come from conservatism: goal success is higher than the
-                    strongest baseline on every scene. Hover a scene to see all four methods.</p>
-
-                <div class="card">
-                    <div class="card-head">
-                        <div class="tabs" role="tablist" aria-label="Metric" id="metric-tabs">
-                            <button class="tab" role="tab" aria-selected="true" data-metric="0">Goal success
-                                &uarr;</button>
-                            <button class="tab" role="tab" aria-selected="false" data-metric="1" tabindex="-1">Region
-                                violation &darr;</button>
-                            <button class="tab" role="tab" aria-selected="false" data-metric="2" tabindex="-1">Group
-                                distance &darr;</button>
-                        </div>
-                        <ul class="legend">
-                            <li><span class="swatch is-ours"></span>Ours</li>
-                            <li><span class="swatch"></span>Best baseline (named)</li>
-                        </ul>
+                <!-- Closed-loop -->
+                <div class="text-column">
+                    <h3 class="subsection-title" id="closed-loop">1. Closed-Loop Navigation</h3>
+                    <div class="content justified">
+                        <p>Our policy has the highest goal success rate (GSR) and the lowest social-region violation
+                            rate (SRVR) in every scenario, and the lowest or tied-lowest group distance (GD) in four of
+                            five. On Zara01_Group, SRVR falls from 17.4 for the next-best method to <span class="hl">1.2</span>
+                            while GSR rises from 38.9 to <span class="hl">77.8</span>. Fewer violations do not come from more conservative behavior: GSR is
+                            higher than the strongest baseline everywhere.</p>
                     </div>
-                    <p class="card-sub" id="metric-desc" style="margin:-8px 0 16px;"></p>
-                    <div class="hbar" id="main-chart" role="tabpanel" aria-labelledby="metric-tabs"></div>
-
-                    <details class="table-view">
-                        <summary>Full table (all methods, all metrics)</summary>
-                        <div class="table-scroll">
-                            <table class="data-table" id="main-table">
-                                <caption>GSR: goal success rate (%), higher is better. SRVR: social-region violation
-                                    rate (%), lower is better. GD: group distance, lower is better. Best per scene in
-                                    bold.</caption>
-                            </table>
-                        </div>
-                    </details>
                 </div>
+                <div class="table-wrap">
+                    <table class="paper-table"><thead><tr><th rowspan="2" class="row-label">Method</th><th colspan="3" class="group">Zara01</th><th colspan="3" class="group">Zara01_Group</th><th colspan="3" class="group">Students003</th><th colspan="3" class="group">ETH_Intersection</th><th colspan="3" class="group">ETH_Hallway</th></tr><tr><th class="first">GSR&thinsp;&uarr;</th><th>SRVR&thinsp;&darr;</th><th>GD&thinsp;&darr;</th><th class="first">GSR&thinsp;&uarr;</th><th>SRVR&thinsp;&darr;</th><th>GD&thinsp;&darr;</th><th class="first">GSR&thinsp;&uarr;</th><th>SRVR&thinsp;&darr;</th><th>GD&thinsp;&darr;</th><th class="first">GSR&thinsp;&uarr;</th><th>SRVR&thinsp;&darr;</th><th>GD&thinsp;&darr;</th><th class="first">GSR&thinsp;&uarr;</th><th>SRVR&thinsp;&darr;</th><th>GD&thinsp;&darr;</th></tr></thead><tbody><tr><th class="row-label" scope="row">GBM</th><td class="first">55.6</td><td>21.0</td><td class="best">0.6</td><td class="first">38.9</td><td>17.5</td><td class="best">1.9</td><td class="first">64.0</td><td>15.2</td><td>1.4</td><td class="first">72.2</td><td>23.5</td><td>2.7</td><td class="first">68.8</td><td>9.3</td><td>1.3</td></tr><tr><th class="row-label" scope="row">CCP</th><td class="first">33.3</td><td>16.0</td><td>2.6</td><td class="first">27.8</td><td>19.5</td><td>4.8</td><td class="first">28.0</td><td>20.0</td><td>3.4</td><td class="first">61.1</td><td>13.0</td><td>2.3</td><td class="first">62.5</td><td>7.5</td><td>1.8</td></tr><tr><th class="row-label" scope="row">CEDRL</th><td class="first">50.0</td><td>15.6</td><td>1.3</td><td class="first">22.2</td><td>17.4</td><td>5.9</td><td class="first">37.0</td><td>27.1</td><td>1.8</td><td class="first">55.6</td><td>13.3</td><td>2.9</td><td class="first">56.3</td><td>19.1</td><td>1.5</td></tr><tr class="ours"><th class="row-label" scope="row">Ours</th><td class="first best">72.2</td><td class="best">7.0</td><td class="best">0.6</td><td class="first best">77.8</td><td class="best">1.2</td><td>2.1</td><td class="first best">66.0</td><td class="best">7.2</td><td class="best">0.7</td><td class="first best">83.3</td><td class="best">3.9</td><td class="best">0.9</td><td class="first best">87.5</td><td class="best">0.9</td><td class="best">0.8</td></tr></tbody></table>
+                </div>
+                <p class="table-caption">GSR and SRVR in %. Higher is better for GSR; lower is better for SRVR and
+                    GD. Best in bold.</p>
 
                 <!-- Qualitative -->
-                <h3 class="sub-head">Qualitative comparisons</h3>
-                <p class="sub-lead">Red curves trace each agent over the previous 60 frames; boxes mark failure
-                    modes.</p>
-
-                <div class="tabs tabs-center" role="tablist" aria-label="Qualitative example" id="qual-tabs">
-                    <button class="tab" role="tab" aria-selected="true" aria-controls="qual-crosswalk"
-                        id="qual-tab-crosswalk">Crosswalk</button>
-                    <button class="tab" role="tab" aria-selected="false" aria-controls="qual-alley"
-                        id="qual-tab-alley" tabindex="-1">Narrow alley</button>
-                    <button class="tab" role="tab" aria-selected="false" aria-controls="qual-group"
-                        id="qual-tab-group" tabindex="-1">Group navigation</button>
-                    <button class="tab" role="tab" aria-selected="false" aria-controls="qual-ablation"
-                        id="qual-tab-ablation" tabindex="-1">w/o world models</button>
+                <div class="text-column">
+                    <h3 class="subsection-title" id="qualitative">2. Qualitative Comparison</h3>
+                    <div class="content justified">
+                        <p>Red curves trace each agent over the previous 60 frames.</p>
+                    </div>
                 </div>
 
-                <figure class="tab-panel" role="tabpanel" id="qual-crosswalk" aria-labelledby="qual-tab-crosswalk"
-                    style="margin:0;">
-                    <a class="figure-img" href="static/images/crosswalk.jpg" target="_blank" rel="noopener">
-                        <img src="static/images/crosswalk.jpg" width="1616" height="448" loading="lazy"
-                            alt="Crosswalk comparison over time for CCP, CEDRL, GBM and Ours. Baselines leave the crosswalk and cut across the road; ours stays on the crosswalk.">
-                    </a>
-                    <figcaption><b>Crosswalk.</b> At a marked crossing, CCP, CEDRL and GBM leave the crosswalk and cut
-                        across the road (blue boxes). Our agent stays on the crosswalk throughout, using semantic scene
-                        cues the way a pedestrian would.</figcaption>
+                <figure class="figure">
+                    <img src="static/images/crosswalk.jpg" width="1616" height="448" loading="lazy"
+                        alt="Crosswalk comparison over time for CCP, CEDRL, GBM and ours.">
+                    <figcaption><strong>Crosswalk.</strong> CCP, CEDRL and GBM leave the crosswalk and cut across the
+                        road (blue boxes). Our agents stay on the crosswalk throughout the crossing.</figcaption>
                 </figure>
-                <figure class="tab-panel" role="tabpanel" id="qual-alley" aria-labelledby="qual-tab-alley" hidden
-                    style="margin:0;">
-                    <a class="figure-img" href="static/images/alley.jpg" target="_blank" rel="noopener">
-                        <img src="static/images/alley.jpg" width="1616" height="724" loading="lazy"
-                            alt="Narrow alley with an approaching vehicle. Baselines and the ablation enter the vehicle's path (blue boxes); ours moves to the safe side (green boxes).">
-                    </a>
-                    <figcaption><b>Narrow alley with an approaching vehicle.</b> Baselines and the variant without world
-                        models pick motions that look locally fine but enter the car&rsquo;s future path (blue). Ours
-                        anticipates the occupancy conflict and moves to the safe side (green), passing collision-free.
-                    </figcaption>
+
+                <figure class="figure">
+                    <img src="static/images/alley.jpg" width="1616" height="724" loading="lazy"
+                        alt="Narrow alley with an approaching vehicle for CEDRL, GBM, CCP, ours, and ours without the dual world model.">
+                    <figcaption><strong>Narrow alley with an approaching vehicle.</strong> The baselines and the
+                        variant without world models step into the vehicle&rsquo;s future path (blue). Ours anticipates
+                        the conflict and moves to the free side of the alley (green).</figcaption>
                 </figure>
-                <figure class="tab-panel" role="tabpanel" id="qual-group" aria-labelledby="qual-tab-group" hidden
-                    style="margin:0;">
-                    <a class="figure-img" href="static/images/group.jpg" target="_blank" rel="noopener">
-                        <img src="static/images/group.jpg" width="1616" height="568" loading="lazy"
-                            alt="Group navigation over time for CCP, CEDRL, GBM and Ours. Baselines show group separation, vehicle collisions and groups spreading onto the road.">
-                    </a>
-                    <figcaption><b>Group navigation.</b> Baselines split groups, collide with a vehicle, or spread so
-                        wide that members drift onto the road. Ours keeps the group compact and coherent while avoiding
-                        vehicles and road regions.</figcaption>
-                </figure>
-                <figure class="tab-panel" role="tabpanel" id="qual-ablation" aria-labelledby="qual-tab-ablation"
-                    hidden style="margin:0;">
-                    <a class="figure-img" href="static/images/ablation-qual.jpg" target="_blank" rel="noopener">
-                        <img src="static/images/ablation-qual.jpg" width="1616" height="304" loading="lazy"
-                            alt="Ours versus ours without the dual world model at an intersection. Without world models, trajectories are less anticipatory and leave the crosswalks.">
-                    </a>
-                    <figcaption><b>Removing the dual world model.</b> The supervised prior alone produces less
-                        anticipatory interactions, unstable adjustments and weaker scene compliance. With world-model
-                        refinement, the policy tells apart actions that are merely feasible from those that stay safe
-                        and appropriate.</figcaption>
+
+                <figure class="figure">
+                    <img src="static/images/group.jpg" width="1616" height="568" loading="lazy"
+                        alt="Group navigation over time for CCP, CEDRL, GBM and ours.">
+                    <figcaption><strong>Group navigation.</strong> The baselines split groups, collide with the vehicle,
+                        or spread out onto the road. Ours keeps the group together while avoiding the vehicle and road
+                        regions.</figcaption>
                 </figure>
 
                 <!-- Ablation -->
-                <h3 class="sub-head">The two world models catch different mistakes</h3>
-                <p class="sub-lead">Neither branch dominates everywhere. They trade off along the social-vs-layout axis
-                    we deliberately decomposed future prediction into.</p>
-
-                <div class="grid-2">
-                    <div class="insight">
-                        <span class="insight-tag">ETH_Intersection &middot; crossing flows</span>
-                        <div class="insight-figure"><strong>83.3 &rarr; 51.9</strong><span>goal success without the
-                                state model</span></div>
-                        <p>Crossing flows are governed by who is heading toward whom. Dropping the semantic model costs
-                            less (66.7).</p>
-                    </div>
-                    <div class="insight">
-                        <span class="insight-tag">ETH_Hallway &middot; constrained passages</span>
-                        <div class="insight-figure"><strong>0.9 &rarr; 13.7</strong><span>region violation without the
-                                semantic model</span></div>
-                        <p>Narrow passages punish invalid footprints more than mispredicted neighbors. Dropping the
-                            state model costs less (8.7).</p>
+                <div class="text-column">
+                    <h3 class="subsection-title" id="ablation">3. Ablation Study</h3>
+                    <div class="content justified">
+                        <p>Removing both world models causes the largest drop in every scenario. The two branches catch
+                            different failures. Without the state model, GSR on ETH_Intersection falls from 83.3 to
+                            <span class="hl">51.9</span>, since crossing flows depend on who is heading toward whom. Without the semantic model,
+                            SRVR on ETH_Hallway rises from 0.9 to <span class="hl">13.7</span>, since narrow passages penalize invalid footprints
+                            more than mispredicted neighbors. Mixing top-ranked and random candidates also matters:
+                            top-10 alone gives candidates too similar to learn from, and random-10 alone gives
+                            candidates too irrelevant to matter.</p>
                     </div>
                 </div>
-
-                <div class="card" style="margin-top:20px;">
-                    <div class="card-head">
-                        <div>
-                            <p class="card-title">Ablations by scene</p>
-                            <p class="card-sub">Best per column in bold. Removing both world models is the largest
-                                drop everywhere.</p>
-                        </div>
-                    </div>
-                    <div class="tabs" role="tablist" aria-label="Scene" id="ablation-tabs"></div>
-                    <div class="table-scroll" role="tabpanel" aria-labelledby="ablation-tabs">
-                        <table class="data-table" id="ablation-table"></table>
-                    </div>
+                <div class="table-wrap">
+                    <table class="paper-table"><thead><tr><th rowspan="2" class="row-label">Variant</th><th colspan="3" class="group">Zara01</th><th colspan="3" class="group">Zara01_Group</th><th colspan="3" class="group">Students003</th><th colspan="3" class="group">ETH_Intersection</th><th colspan="3" class="group">ETH_Hallway</th></tr><tr><th class="first">GSR&thinsp;&uarr;</th><th>SRVR&thinsp;&darr;</th><th>GD&thinsp;&darr;</th><th class="first">GSR&thinsp;&uarr;</th><th>SRVR&thinsp;&darr;</th><th>GD&thinsp;&darr;</th><th class="first">GSR&thinsp;&uarr;</th><th>SRVR&thinsp;&darr;</th><th>GD&thinsp;&darr;</th><th class="first">GSR&thinsp;&uarr;</th><th>SRVR&thinsp;&darr;</th><th>GD&thinsp;&darr;</th><th class="first">GSR&thinsp;&uarr;</th><th>SRVR&thinsp;&darr;</th><th>GD&thinsp;&darr;</th></tr></thead><tbody><tr class="ours ours-first"><th class="row-label" scope="row">Ours</th><td class="first best">72.2</td><td class="best">7.0</td><td class="best">0.6</td><td class="first best">77.8</td><td class="best">1.2</td><td>2.1</td><td class="first best">66.0</td><td class="best">7.2</td><td class="best">0.7</td><td class="first best">83.3</td><td class="best">3.9</td><td>0.9</td><td class="first best">87.5</td><td class="best">0.9</td><td>0.8</td></tr><tr><th class="row-label" scope="row">w/o both WMs</th><td class="first">25.9</td><td>12.6</td><td>0.7</td><td class="first">16.7</td><td>47.0</td><td>1.9</td><td class="first">44.7</td><td>14.4</td><td class="best">0.7</td><td class="first">40.7</td><td>13.5</td><td>1.1</td><td class="first">58.3</td><td>9.9</td><td>1.0</td></tr><tr><th class="row-label" scope="row">w/o State WM</th><td class="first">44.4</td><td>10.7</td><td class="best">0.6</td><td class="first">27.8</td><td>22.3</td><td class="best">1.7</td><td class="first">47.0</td><td>9.5</td><td>0.8</td><td class="first">51.9</td><td>10.6</td><td>1.0</td><td class="first">58.3</td><td>8.7</td><td>0.8</td></tr><tr><th class="row-label" scope="row">w/o Semantic WM</th><td class="first">44.4</td><td>9.3</td><td class="best">0.6</td><td class="first">38.9</td><td>17.5</td><td>2.3</td><td class="first">63.3</td><td>8.9</td><td>0.8</td><td class="first">66.7</td><td>6.2</td><td>0.9</td><td class="first">70.8</td><td>13.7</td><td class="best">0.6</td></tr><tr><th class="row-label" scope="row">w/o VLM</th><td class="first">48.1</td><td>10.9</td><td>0.9</td><td class="first">29.6</td><td>7.4</td><td class="best">1.7</td><td class="first">60.0</td><td>10.6</td><td>0.8</td><td class="first">63.0</td><td>7.4</td><td>1.1</td><td class="first">66.7</td><td>16.9</td><td>0.9</td></tr><tr><th class="row-label" scope="row">Top-10 candidates</th><td class="first">44.4</td><td>18.2</td><td>0.7</td><td class="first">14.8</td><td>42.7</td><td>3.2</td><td class="first">61.3</td><td>8.3</td><td>1.0</td><td class="first">55.6</td><td>13.9</td><td>1.0</td><td class="first">62.5</td><td>3.4</td><td>0.7</td></tr><tr><th class="row-label" scope="row">Random-10 candidates</th><td class="first">22.2</td><td>20.2</td><td>0.7</td><td class="first">18.5</td><td>18.5</td><td>2.5</td><td class="first">57.3</td><td>8.5</td><td>0.8</td><td class="first">44.4</td><td>14.2</td><td class="best">0.8</td><td class="first">70.8</td><td>12.5</td><td>1.2</td></tr></tbody></table>
                 </div>
+                <p class="table-caption">WM: world model. Best in bold.</p>
+
+                <figure class="figure">
+                    <img src="static/images/ablation-qual.jpg" width="1616" height="304" loading="lazy"
+                        alt="Ours and ours without the dual world model at the same intersection.">
+                    <figcaption>Full model (left) and the variant without the dual world model (right) at the same
+                        intersection.</figcaption>
+                </figure>
 
                 <!-- World model predictions -->
-                <h3 class="sub-head">What the semantic world model sees</h3>
-                <p class="sub-lead">Both predictors are accurate on held-out data, so the preferences guiding GRPO rest
-                    on reliable predictions: <strong>87.0% mIoU</strong> and 99.3% pixel accuracy for the semantic
-                    branch; <strong>0.18&nbsp;m</strong> position ADE and 20.8&deg; heading error for the state
-                    branch.</p>
-                <figure class="figure" style="margin-top:0;">
-                    <a class="figure-img" href="static/images/semantic-seq.jpg" target="_blank" rel="noopener">
-                        <img src="static/images/semantic-seq.jpg" width="1616" height="612" loading="lazy"
-                            alt="Zara01 sequence over time: input RGB images, ground-truth semantic maps, and semantic maps predicted by the world model, which closely match the ground truth.">
-                    </a>
-                    <figcaption><b>Zara01 sequence.</b> Input frames (top), ground-truth semantics (middle) and world
-                        model predictions (bottom). Walkable regions keep their extent and non-walkable structure stays
-                        stable over time &mdash; including areas temporarily occluded by people.</figcaption>
+                <div class="text-column">
+                    <h3 class="subsection-title" id="world-models">4. World Model Predictions</h3>
+                    <div class="content justified">
+                        <p>Both world models are accurate on held-out data, so the preferences that guide GRPO rest on
+                            reliable predictions. The semantic branch reaches <span class="hl">87.0% mIoU</span> and 99.3% pixel accuracy;
+                            the state branch reaches <span class="hl">0.18&nbsp;m</span> position ADE and a 20.8&deg; heading error.</p>
+                    </div>
+                </div>
+
+                <figure class="figure">
+                    <img src="static/images/semantic-seq.jpg" width="1616" height="612" loading="lazy"
+                        alt="Zara01 sequence: input frames, ground-truth segmentation, and segmentation predicted by the Semantic Transition World Model.">
+                    <figcaption>Zara01 sequence. Input frames (top), ground-truth segmentation (middle) and the
+                        Semantic Transition World Model&rsquo;s prediction (bottom).</figcaption>
                 </figure>
 
                 <!-- Human-likeness -->
-                <h3 class="sub-head">Judged more human-like</h3>
-                <p class="sub-lead">20 naive participants rated 40 anonymized rollouts on 7-point Likert scales. Ours
-                    scores highest on every criterion; it also produces the lowest ADE against held-out human
-                    trajectories.</p>
-
-                <div class="grid-2" style="align-items:start;">
-                    <div class="card">
-                        <div class="card-head" style="margin-bottom:12px;">
-                            <div>
-                                <p class="card-title">User study</p>
-                                <p class="card-sub">Mean &plusmn; standard error. Significance vs. ours (Holm-corrected
-                                    Wilcoxon).</p>
-                            </div>
-                        </div>
-                        <div class="tabs" role="tablist" aria-label="Criterion" id="study-tabs"></div>
-                        <div class="dots" id="study-chart" role="tabpanel" aria-labelledby="study-tabs"></div>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-head" style="margin-bottom:12px;">
-                            <div>
-                                <p class="card-title">Motion fidelity</p>
-                                <p class="card-sub">Displacement error to held-out human trajectories (m), &plusmn;
-                                    95% CI. Lower is better.</p>
-                            </div>
-                        </div>
-                        <div class="table-scroll">
-                            <table class="data-table" id="fidelity-table"></table>
-                        </div>
+                <div class="text-column">
+                    <h3 class="subsection-title" id="human-likeness">5. Human-Likeness</h3>
+                    <div class="content justified">
+                        <p>Twenty participants rated 40 anonymized rollouts on 7-point Likert scales for motion quality,
+                            naturalness and smoothness. Our method received the highest mean on all three criteria. The
+                            differences are significant against every baseline, except CCP on smoothness (Holm-corrected
+                            Wilcoxon signed-rank tests).</p>
                     </div>
                 </div>
 
-                <!-- Cost -->
-                <h3 class="sub-head">Foresight costs nothing at inference</h3>
-                <p class="sub-lead">World-model scoring only happens while training. The deployed policy never waits
-                    for it.</p>
-                <div class="mini-stats" style="margin-top:0;">
-                    <div class="mini-stat">
-                        <strong>0.115 s</strong>
-                        <span>Semantic world model, per candidate (training only, 25 denoising steps)</span>
-                    </div>
-                    <div class="mini-stat">
-                        <strong>1.9 ms</strong>
-                        <span>State world model, per candidate (training only)</span>
-                    </div>
-                    <div class="mini-stat is-ours">
-                        <strong>65 ms</strong>
-                        <span>Deployed policy, per decision &mdash; one anchor classification, no world model</span>
+                <figure class="figure figure-narrow">
+                    <img src="static/images/user-study.png" width="1600" height="540" loading="lazy"
+                        alt="User study bar charts for motion quality, naturalness and smoothness. Ours scores about 4.9 to 5.1; GBM, CCP and CEDRL score between about 3.0 and 3.7.">
+                    <figcaption>Participant-level mean ratings with standard error. * <em>p</em>&nbsp;&lt;&nbsp;.05,
+                        ** <em>p</em>&nbsp;&lt;&nbsp;.01.</figcaption>
+                </figure>
+
+                <div class="text-column">
+                    <div class="content justified">
+                        <p>Our rollouts also stay closest to held-out human trajectories, with the lowest average
+                            displacement error (ADE) in both scenes.</p>
                     </div>
                 </div>
+                <div class="table-wrap table-wrap-narrow">
+                    <table class="paper-table"><thead><tr><th rowspan="2" class="row-label">Method</th><th colspan="2" class="group">Zara01</th><th colspan="2" class="group">Students003</th></tr><tr><th class="first">ADE&thinsp;&darr;</th><th>FDE&thinsp;&darr;</th><th class="first">ADE&thinsp;&darr;</th><th>FDE&thinsp;&darr;</th></tr></thead><tbody><tr><th class="row-label" scope="row">GBM</th><td class="first">0.3057 <span class="ci">&plusmn;0.0345</span></td><td>0.5203 <span class="ci">&plusmn;0.0509</span></td><td class="first">0.2147 <span class="ci">&plusmn;0.0026</span></td><td>0.4194 <span class="ci">&plusmn;0.0056</span></td></tr><tr><th class="row-label" scope="row">CCP</th><td class="first">0.2406 <span class="ci">&plusmn;0.0005</span></td><td>0.4524 <span class="ci">&plusmn;0.0005</span></td><td class="first">0.2053 <span class="ci">&plusmn;0.0031</span></td><td class="best">0.3873 <span class="ci">&plusmn;0.0060</span></td></tr><tr><th class="row-label" scope="row">CEDRL</th><td class="first">0.3629 <span class="ci">&plusmn;0.0071</span></td><td>0.6817 <span class="ci">&plusmn;0.0134</span></td><td class="first">0.2338 <span class="ci">&plusmn;0.0030</span></td><td>0.4382 <span class="ci">&plusmn;0.0058</span></td></tr><tr class="ours"><th class="row-label" scope="row">Ours</th><td class="first best">0.2064 <span class="ci">&plusmn;0.0069</span></td><td class="best">0.3897 <span class="ci">&plusmn;0.0141</span></td><td class="first best">0.1994 <span class="ci">&plusmn;0.0026</span></td><td>0.3948 <span class="ci">&plusmn;0.0052</span></td></tr></tbody></table>
+                </div>
+                <p class="table-caption">Displacement error to held-out human trajectories (m), with 95% confidence
+                    intervals. Best in bold.</p>
             </div>
         </section>
 
         <!-- ===== Limitations ===== -->
-        <section class="section" aria-labelledby="limits-title">
-            <div class="wrap wrap-text prose">
-                <h2 id="limits-title">Limitations</h2>
-                <ul class="limits">
-                    <li><strong>Short-horizon prediction.</strong> One anchor-conditioned step may miss behavior that
-                        unfolds over several seconds, such as delayed yielding or group reformation.</li>
-                    <li><strong>Fixed vocabulary.</strong> With K&nbsp;=&nbsp;100 anchors, rare or abrupt motions are
-                        approximated imperfectly.</li>
-                    <li><strong>Rule-based semantic scoring.</strong> New environments may need their class mapping or
-                        validity rules adjusted.</li>
-                    <li><strong>Simulation only.</strong> Experiments run in reconstructed Unity scenes; real-world
-                        deployment is future work.</li>
-                </ul>
+        <section class="section" id="limitations">
+            <div class="container text-column">
+                <h2 class="section-title">Limitations</h2>
+                <div class="content justified">
+                    <p>Each world-model prediction covers a single anchor, so behavior that unfolds over several
+                        seconds, such as delayed yielding or group reformation, can be missed. The fixed vocabulary of
+                        100 anchors approximates rare or abrupt motions imperfectly, and the semantic score relies on
+                        predefined labels and rule-based thresholds that may need adjusting for new environments. All
+                        experiments are run in reconstructed Unity scenes.</p>
+                </div>
             </div>
         </section>
 
         <!-- ===== BibTeX ===== -->
-        <section class="section" id="bibtex" aria-labelledby="bibtex-title">
-            <div class="wrap wrap-text">
-                <h2 id="bibtex-title">BibTeX</h2>
+        <section class="section" id="bibtex">
+            <div class="container text-column">
+                <h2 class="section-title">BibTeX</h2>
                 <div class="bibtex">
+                    <button class="copy-button" id="copy-bibtex" type="button">Copy</button>
                     <pre><code id="bibtex-code">@inproceedings{hong2026seeing,
   title     = {Seeing Beyond the Next Step: World-Model-Guided
                Human-Like Navigation in Multi-Agent Scenes},
@@ -603,30 +395,17 @@
   booktitle = {Advances in Neural Information Processing Systems},
   year      = {2026}
 }</code></pre>
-                    <button class="copy-btn" id="copy-bibtex" type="button">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <rect x="9" y="9" width="12" height="12" rx="2" />
-                            <path d="M5 15V5a2 2 0 0 1 2-2h10" />
-                        </svg>
-                        <span>Copy</span>
-                    </button>
                 </div>
             </div>
         </section>
 
     </main>
 
-    <footer class="footer">
-        <div class="wrap footer-inner">
-            <span>&copy; 2026 the authors</span>
-            <span>Seeing Beyond the Next Step &middot; NeurIPS 2026</span>
-        </div>
-    </footer>
+    </div>
 
-    <div class="tooltip" id="tooltip" role="presentation"></div>
-
-    <script src="static/js/main.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+    <script defer src="static/js/main.js"></script>
 </body>
 
 </html>
